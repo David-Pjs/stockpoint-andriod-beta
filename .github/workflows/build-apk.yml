@@ -31,6 +31,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          sdkmanager "cmdline-tools;latest"
+
       - name: Sync Capacitor
         run: npx cap sync android
 
@@ -40,7 +48,7 @@ jobs:
 
       - name: Build Debug APK
         working-directory: ./android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace --info
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
