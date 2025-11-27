@@ -36,33 +36,20 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses || true
-
-      - name: Install Android SDK components
-        run: |
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-          sdkmanager "cmdline-tools;latest"
-
-      - name: Install Capacitor CLI globally
-        run: npm install -g @capacitor/cli
-
-      - name: Verify Capacitor version
-        run: npx cap --version
-
       - name: Sync Capacitor to Android
         run: npx cap sync android
 
-      - name: Grant execute permission for gradlew
-        working-directory: ./android
-        run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build Debug APK
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Build Debug APK with Gradle
         working-directory: ./android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace --info
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
