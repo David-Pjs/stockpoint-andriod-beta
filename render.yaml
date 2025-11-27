@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: stockpoint-apk-builder
+    env: docker
+    dockerfilePath: ./Dockerfile.android
+    plan: free
+    autoDeploy: true
+    buildCommand: echo "Building APK..."
+    startCommand: echo "APK built successfully"
