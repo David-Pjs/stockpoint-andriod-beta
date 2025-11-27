@@ -650,6 +650,10 @@ export function checkout(cart: CartItem[], discount: number, method: string | nu
 /* Re-export date helpers for components that import from "../../index" */
 export { toISODate, toMonthKey };
 
+/* Re-export credit and expenses modules */
+export * from './lib/credit';
+export * from './lib/expenses';
+
 /* Boot log */
 (function init() {
   const { firstRun, userCount } = ensureFirstRun();

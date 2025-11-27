@@ -146,68 +146,99 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-56px)] px-4 py-10 flex flex-col items-center">
-      <h1 className="text-2xl font-semibold text-slate-100">Welcome</h1>
-      <p className="mt-1 text-sm text-slate-400">Select your profile to continue</p>
+    <div className="min-h-[calc(100vh-56px)] px-4 py-10 flex flex-col items-center bg-gradient-to-b from-[var(--bg)] to-[var(--panel)]">
+      {/* Hero Section - Nigerian Business Focused */}
+      <div className="text-center mb-6">
+        <div className="text-4xl mb-2">🏪</div>
+        <h1 className="text-2xl font-bold text-[var(--ink)] mb-1">
+          Welcome to Your Shop
+        </h1>
+        <p className="text-[var(--muted)] text-sm max-w-md mx-auto">
+          Manage your business easily. Track sales, stock, and profit all in one place.
+        </p>
+      </div>
 
       {/* Search filter */}
-      <div className="w-full max-w-lg mt-5">
+      <div className="w-full max-w-lg mt-2">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search user or role…"
-          className="w-full control"
+          placeholder="🔍 Search staff or role..."
+          className="w-full px-4 py-3 rounded-xl bg-[var(--panel)] border-2 border-[var(--line)] text-[var(--ink)] placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:outline-none transition-colors"
           aria-label="Search profiles"
         />
       </div>
 
-      {/* Profiles grid */}
-      <div className="grid grid-cols-2 gap-4 mt-6 sm:grid-cols-3 md:grid-cols-4">
-        {filteredProfiles.map((p) => {
-          const avatarUrl = getAvatar(p.id); // use saved profile photo if available
-          const isSelected = selected?.id === p.id;
-          return (
-            <button
-              key={p.id}
-              onClick={() => setSelected(p)}
-              className={`group w-36 h-36 rounded-2xl border border-[#1f2742] bg-[#0f172a] hover:border-slate-500 focus:outline-none transition
-                ${isSelected ? "ring-2 ring-emerald-400" : ""}`}
-              type="button"
-            >
-              <div className="flex items-center justify-center w-16 h-16 mx-auto mt-6 overflow-hidden rounded-full">
-                {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt={`${p.username} avatar`}
-                    className="object-cover w-16 h-16"
-                  />
-                ) : (
-                  <div
-                    className="grid w-16 h-16 font-bold rounded-full place-items-center text-slate-900"
-                    style={{ background: colorFor(p.username) }}
-                    aria-hidden
-                  >
-                    {initials(p.username)}
+      {/* Profiles grid - Improved for Nigerian traders */}
+      <div className="w-full max-w-3xl mt-6">
+        <p className="text-xs text-[var(--muted)] mb-3 text-center">
+          👤 Select who's working today
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          {filteredProfiles.map((p) => {
+            const avatarUrl = getAvatar(p.id);
+            const isSelected = selected?.id === p.id;
+            const roleEmoji = p.role === 'admin' ? '👑' : p.role === 'accountant' ? '📊' : '🧑‍💼';
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelected(p)}
+                className={`group w-full min-h-[120px] p-3 rounded-xl border-2 transition-all duration-200
+                  bg-[var(--panel)] hover:bg-[var(--ghost)]
+                  ${isSelected
+                    ? 'border-green-500 shadow-lg shadow-green-500/20'
+                    : 'border-[var(--line)] hover:border-[var(--accent)]'
+                  }`}
+                type="button"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="relative">
+                    <div className="flex items-center justify-center w-16 h-16 overflow-hidden rounded-full ring-2 ring-[var(--line)]">
+                      {avatarUrl ? (
+                        <img
+                          src={avatarUrl}
+                          alt={`${p.username} avatar`}
+                          className="object-cover w-16 h-16"
+                        />
+                      ) : (
+                        <div
+                          className="grid w-16 h-16 text-lg font-bold rounded-full place-items-center text-slate-900"
+                          style={{ background: colorFor(p.username) }}
+                          aria-hidden
+                        >
+                          {initials(p.username)}
+                        </div>
+                      )}
+                    </div>
+                    {isSelected && (
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="mt-3 text-sm font-medium truncate text-slate-200">{p.username}</div>
-              <div className="text-[11px] text-slate-400">{p.role}</div>
-            </button>
-          );
-        })}
-        {filteredProfiles.length === 0 && (
-          <div className="text-sm text-center col-span-full text-slate-400">
-            No matching users.
-          </div>
-        )}
+                  <div className="mt-2 text-sm font-semibold truncate max-w-full text-[var(--ink)]">
+                    {p.username}
+                  </div>
+                  <div className="text-[10px] text-[var(--muted)] mt-1 px-2 py-0.5 rounded-full bg-[var(--bg)]">
+                    {roleEmoji} {p.role}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+          {filteredProfiles.length === 0 && (
+            <div className="text-sm text-center col-span-full text-[var(--muted)] py-8">
+              No staff found. Try a different search.
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* PIN form */}
+      {/* PIN form - Nigerian business friendly */}
       {selected && (
         <form
           onSubmit={onSubmit}
-          className="mt-6 w-full max-w-sm rounded-2xl bg-[#0f172a] border border-[#1f2742] p-5"
+          className="mt-8 w-full max-w-md rounded-2xl bg-[var(--panel)] border-2 border-[var(--line)] p-6 shadow-lg"
           autoComplete="off"
         >
           {/* decoy fields to soak up password managers */}
@@ -228,13 +259,17 @@ export default function Login() {
             style={{ position: "absolute", left: "-9999px", width: 0, height: 0, opacity: 0 }}
           />
 
-          <div className="text-sm text-slate-300">
-            PIN for <b>{selected.username}</b>
+          <div className="text-center mb-6">
+            <div className="text-3xl mb-2">🔐</div>
+            <p className="text-base text-[var(--ink)] font-medium">
+              Enter PIN for <span className="font-bold text-green-600">{selected.username}</span>
+            </p>
+            <p className="text-sm text-[var(--muted)] mt-1">Your 4-6 digit security code</p>
           </div>
 
-          <div className="relative mt-2">
+          <div className="relative">
             <input
-              className="w-full rounded-lg bg-[#0b1220] border border-[#1f2742] px-3 py-2 text-slate-100 outline-none tracking-widest"
+              className="w-full rounded-xl bg-[var(--bg)] border-2 border-[var(--line)] px-4 py-4 text-[var(--ink)] text-center text-2xl outline-none tracking-[0.5em] font-bold focus:border-green-500 transition-colors"
               type="password"
               inputMode="numeric"
               pattern="\d*"
@@ -251,26 +286,49 @@ export default function Login() {
               autoFocus
             />
             {lockedFor > 0 && (
-              <div className="absolute text-xs -translate-y-1/2 right-2 top-1/2 text-amber-300">
-                {Math.ceil(lockedFor / 1000)}s
+              <div className="absolute text-sm font-bold -translate-y-1/2 right-4 top-1/2 text-orange-500 bg-[var(--panel)] px-2 py-1 rounded-lg">
+                🔒 {Math.ceil(lockedFor / 1000)}s
               </div>
             )}
           </div>
 
-          {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+          {error && (
+            <div className="mt-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+              <p className="text-sm text-red-600 dark:text-red-400 font-medium">⚠️ {error}</p>
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={busy || lockedFor > 0 || pin.length < 4}
-            className="w-full px-4 py-2 mt-4 font-medium rounded-xl bg-emerald-500 text-slate-900 disabled:opacity-60"
+            className="w-full px-6 py-4 mt-5 text-lg font-bold rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
-            {busy ? "Signing in..." : "Continue"}
+            {busy ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Signing in...
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <span>Start Working</span>
+                <span>→</span>
+              </span>
+            )}
           </button>
 
-          <p className="mt-3 text-xs text-slate-500">
-            Tip: to prevent saved-password popups on this screen, disable “Autofill passwords” for
-            <code className="mx-1">localhost</code> in your browser settings.
-          </p>
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setSelected(null);
+                setPin('');
+                setError(null);
+              }}
+              className="text-sm text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
+            >
+              ← Choose different person
+            </button>
+          </div>
         </form>
       )}
     </div>

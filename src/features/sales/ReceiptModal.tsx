@@ -557,19 +557,19 @@ export default function ReceiptModal({
       <div
         ref={containerRef}
         className="overflow-hidden text-black bg-white shadow-sm rounded-2xl print:bg-white"
-        style={{ maxWidth: 820, margin: "0 auto", border: "1px solid #e5e7eb" }}
+        style={{ maxWidth: 680, margin: "0 auto", border: "1px solid #e5e7eb" }}
       >
         {/* Ribbon header */}
         <div
-          className="relative p-5 sm:p-7"
+          className="relative p-4"
           style={{
             background:
               "linear-gradient(135deg, rgba(2,132,199,0.06), rgba(16,185,129,0.06))",
           }}
         >
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="text-[24px] sm:text-[26px] font-extrabold tracking-tight">
+              <div className="text-[20px] font-extrabold tracking-tight">
                 {company.name || "Your Company"}
               </div>
               {(company.address || company.email || company.phone) && (
@@ -583,35 +583,35 @@ export default function ReceiptModal({
                 </div>
               )}
             </div>
-            <div className="w-16 h-16 overflow-hidden bg-white border shrink-0 sm:w-20 sm:h-20 rounded-xl border-neutral-200">
+            <div className="w-14 h-14 overflow-hidden bg-white border shrink-0 rounded-xl border-neutral-200">
               {company.logo ? <img src={company.logo} className="object-cover w-full h-full" /> : null}
             </div>
           </div>
         </div>
 
         {/* Meta + Summary */}
-        <div className="p-5 sm:p-7">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="p-3 border rounded-xl border-neutral-200">
+        <div className="p-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="p-2.5 border rounded-lg border-neutral-200">
               <div className="text-[11px] text-neutral-500">Date</div>
               <div className="font-semibold">{headerDate}</div>
               <div className="mt-2 text-[11px] text-neutral-500">Reference</div>
               <div className="font-semibold truncate">{headerRef}</div>
             </div>
-            <div className="p-3 border rounded-xl border-neutral-200">
+            <div className="p-2.5 border rounded-lg border-neutral-200">
               <div className="text-[11px] text-neutral-500">Customer</div>
               <div className="font-semibold truncate">{headerCustomer}</div>
               <div className="mt-2 text-[11px] text-neutral-500">Method</div>
               <div className="font-semibold">{headerMethod}</div>
             </div>
-            <div className="p-3 border rounded-xl border-neutral-200 bg-neutral-50">
+            <div className="p-2.5 border rounded-lg border-neutral-200 bg-neutral-50">
               <div className="text-[11px] text-neutral-500">Total</div>
-              <div className="text-[22px] font-extrabold">{money(grandTotal)}</div>
+              <div className="text-[20px] font-extrabold">{money(grandTotal)}</div>
             </div>
           </div>
 
           {/* Items table */}
-          <div className="mt-5 overflow-hidden border rounded-xl border-neutral-200">
+          <div className="mt-4 overflow-hidden border rounded-lg border-neutral-200">
             <table className="w-full text-[13px]">
               <thead className="bg-neutral-50 text-neutral-700">
                 <tr className="border-b border-neutral-200">
@@ -651,7 +651,7 @@ export default function ReceiptModal({
 
           {/* Cashier (single only) */}
           {!isMulti && author && (
-            <div className="flex items-center gap-2 mt-5">
+            <div className="flex items-center gap-2 mt-4">
               <div className="flex items-center justify-center overflow-hidden rounded-full w-9 h-9 bg-neutral-200">
                 {avatar ? (
                   <img src={avatar} className="object-cover w-full h-full" />
@@ -673,7 +673,7 @@ export default function ReceiptModal({
       <div className="flex flex-wrap items-center gap-2 mt-4 print:hidden">
         <button
           type="button"
-          className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50"
+          className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           onClick={onSaveEReceipt}
           disabled={isMulti || saving || (limit !== Infinity && count >= limit)}
           title={limit === Infinity ? "" : `Saved: ${count}/${limit}`}
@@ -683,7 +683,7 @@ export default function ReceiptModal({
 
         <button
           type="button"
-          className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+          className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           onClick={onSavePng}
           disabled={busy}
         >
@@ -692,7 +692,7 @@ export default function ReceiptModal({
 
         <button
           type="button"
-          className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+          className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           onClick={onShare}
           disabled={busy}
         >
@@ -701,7 +701,7 @@ export default function ReceiptModal({
 
         <button
           type="button"
-          className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+          className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 transition-colors"
           onClick={onShareText}
         >
           Share as Text
@@ -709,10 +709,10 @@ export default function ReceiptModal({
 
         <button
           type="button"
-          className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+          className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 transition-colors"
           onClick={onPrintPdf}
         >
-          Print / Save as PDF
+          Print / PDF
         </button>
 
         {/* New multi-export/share buttons */}
@@ -720,20 +720,20 @@ export default function ReceiptModal({
           <>
             <button
               type="button"
-              className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+              className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               onClick={onPrintPdfMulti}
               disabled={busy}
             >
-              Export all as PDF
+              Export all PDF
             </button>
 
             <button
               type="button"
-              className="px-3 py-2 border rounded-lg border-neutral-300 hover:bg-neutral-100"
+              className="px-3.5 py-2 text-sm font-medium border rounded-lg border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               onClick={onShareImages}
               disabled={busy}
             >
-              Share images (WhatsApp / share)
+              Share Images
             </button>
           </>
         )}

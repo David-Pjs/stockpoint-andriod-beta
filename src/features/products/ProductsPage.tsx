@@ -8,11 +8,13 @@ import {
   isAccountant,
   money,
   type Product,
-  getLicense, // <-- used to read current plan
 } from "../../index";
+import { useBackendLicense } from "../../hooks/useBackendLicense";
 import Card from "../../ui/Card";
 import InputRow from "../../ui/InputRow";
 import Button from "../../ui/Button";
+import { AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /* ----------------------------- caps ------------------------------ */
 /** Fallback caps if you don’t import a central PLAN_LIMITS. */
@@ -155,6 +157,7 @@ async function clearProductDraftFromIdb(): Promise<void> {
  */
 export default function ProductsPage() {
   const admin = isAdmin() || isAccountant();
+  const { license, isBlocked } = useBackendLicense();
 
   // state
   const [items, setItems] = useState<Product[]>([]);
@@ -243,15 +246,9 @@ export default function ProductsPage() {
     [items, archived]
   );
 
-  const { plan = "free" as Plan } = (() => {
-    try {
-      return getLicense?.() ?? { plan: "free" as Plan };
-    } catch {
-      return { plan: "free" as Plan };
-    }
-  })();
-
-  const productCap = PLAN_LIMITS[plan]?.productsMax ?? 80;
+  // Use backend license for accurate limits
+  const productCap = license?.limits.products ?? 80;
+  const planDisplay = license?.planDisplay ?? "Free";
   const activeCount = activeItems.length;
   const capRatio = Math.min(activeCount / productCap, 1);
 
@@ -326,7 +323,7 @@ export default function ProductsPage() {
     // Cap guard: count only non-archived products
     if (activeCount >= productCap) {
       setErr(
-        `Product limit reached for the ${plan.toUpperCase()} plan. (${activeCount}/${productCap}). ` +
+        `Product limit reached for the ${planDisplay} plan. (${activeCount}/${productCap}). ` +
           `Archive old items or upgrade to add more.`
       );
       return;
@@ -406,6 +403,52 @@ export default function ProductsPage() {
   /* ----------------------------- UI ------------------------------ */
   return (
     <div className="grid gap-6">
+      {/* Subscription Expired Warning */}
+      {isBlocked && (
+        <div className="p-6 rounded-2xl bg-red-500/10 border-2 border-red-500/30">
+          <div className="flex items-start gap-4">
+            <AlertTriangle size={32} className="text-red-500 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-red-600 dark:text-red-400 mb-2">
+                ⛔ Subscription Expired
+              </h3>
+              <p className="text-[var(--muted)] mb-4">
+                Your subscription has expired. You can view your products but cannot add new ones or make sales.
+                Please renew your subscription to continue using StockPoint.
+              </p>
+              <Link
+                to="/settings"
+                className="inline-block px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors"
+              >
+                Renew Subscription →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Warning when approaching limit */}
+      {!isBlocked && activeCount >= productCap * 0.9 && activeCount < productCap && (
+        <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/30">
+          <div className="flex items-start gap-3">
+            <AlertTriangle size={24} className="text-orange-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-[var(--ink)] mb-1">Nearly at Product Limit!</h3>
+              <p className="text-sm text-[var(--muted)] mb-2">
+                You're using {activeCount}/{productCap} products ({Math.round((activeCount / productCap) * 100)}% of your {planDisplay} plan limit).
+                Consider upgrading or archiving old products.
+              </p>
+              <Link
+                to="/settings"
+                className="text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400"
+              >
+                Upgrade Plan →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* KPIs */}
       <Card>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -576,8 +619,8 @@ export default function ProductsPage() {
         {note && <p className="mt-2 text-sm text-green-300">{note}</p>}
 
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          <Button onClick={onSave} disabled={activeCount >= productCap}>
-            Save
+          <Button onClick={onSave} disabled={isBlocked || activeCount >= productCap}>
+            {isBlocked ? 'Subscription Expired' : activeCount >= productCap ? 'Limit Reached' : 'Save'}
           </Button>
           <button
             className="btn-ghost"

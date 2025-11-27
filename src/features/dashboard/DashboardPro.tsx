@@ -13,6 +13,7 @@ import Card from "../../ui/Card";
 import Pill from "../../ui/Pill";
 import Button from "../../ui/Button";
 import { Link } from "react-router-dom";
+import DashboardStats from "../../components/DashboardStats";
 
 /* -------------------- local date helpers (no UTC drift) -------------------- */
 function todayYMD(): string {
@@ -162,6 +163,9 @@ export default function DashboardFree() {
 
   return (
     <div className="grid gap-6">
+      {/* New Nigerian business-friendly dashboard */}
+      <DashboardStats />
+
       {/* Upgrade strip / trial info */}
       <Card>
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

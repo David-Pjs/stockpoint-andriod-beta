@@ -32,9 +32,9 @@ function openNew(url?: string) {
   window.open(url, "_blank", "noopener");
 }
 
-const TIER_AMOUNTS: Record<Tier, number> = {
-  small: 250000, // ₦2,500 in kobo
-  large: 500000, // ₦5,000 in kobo
+const TIER_AMOUNTS = {
+  small: { monthly: 300000, yearly: 3000000 },   // ₦3k or ₦30k
+  large: { monthly: 500000, yearly: 5000000 }    // ₦5k or ₦50k
 };
 
 const IS_DEV_HOST =
@@ -67,7 +67,8 @@ export default function SettingsPage() {
 
   /* -------- Pay UI state (admin only) -------- */
   const [email, setEmail] = useState("");
-  const [tier, setTier] = useState<Tier>("small"); // default ₦2,500
+  const [tier, setTier] = useState<Tier>("small"); // default Pro
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const [mode, setMode] = useState<"one-time" | "plan">("one-time");
   const [loading, setLoading] = useState(false);
   const [apiOk, setApiOk] = useState<boolean | null>(null);
@@ -140,7 +141,9 @@ export default function SettingsPage() {
     try {
       let url: string;
       if (mode === "one-time") {
-        url = await initOneTime(email, TIER_AMOUNTS[tier]);
+        // Use new backend payment API with billing parameter
+        const amount = TIER_AMOUNTS[tier][billing];
+        url = await initOneTime(email, amount);
       } else {
         const planCode = tier === "small" ? (cfg.plan2500 || "") : (cfg.plan5000 || "");
         if (!planCode) {
@@ -216,25 +219,39 @@ export default function SettingsPage() {
               </label>
 
               <div className="text-sm">
-                Tier
+                Plan
                 <div className="flex items-center gap-4 mt-1">
                   <label className="inline-flex items-center gap-2">
                     <input type="radio" name="tier" checked={tier === "small"} onChange={() => setTier("small")} />
-                    Small — {money(2500)}
+                    Pro
                   </label>
                   <label className="inline-flex items-center gap-2">
                     <input type="radio" name="tier" checked={tier === "large"} onChange={() => setTier("large")} />
-                    Large — {money(5000)}
+                    Enterprise
                   </label>
                 </div>
               </div>
 
               <div className="text-sm">
-                Billing type
+                Billing Period
+                <div className="flex items-center gap-4 mt-1">
+                  <label className="inline-flex items-center gap-2">
+                    <input type="radio" name="billing" checked={billing === "monthly"} onChange={() => setBilling("monthly")} />
+                    Monthly — {tier === "small" ? money(3000) : money(5000)}
+                  </label>
+                  <label className="inline-flex items-center gap-2">
+                    <input type="radio" name="billing" checked={billing === "yearly"} onChange={() => setBilling("yearly")} />
+                    Yearly — {tier === "small" ? money(30000) : money(50000)} <span className="text-xs opacity-70">(Save {tier === "small" ? money(6000) : money(10000)})</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="text-sm">
+                Payment Type
                 <div className="flex items-center gap-4 mt-1">
                   <label className="inline-flex items-center gap-2">
                     <input type="radio" name="mode" checked={mode === "one-time"} onChange={() => setMode("one-time")} />
-                    One-time (manual monthly)
+                    One-time payment
                   </label>
                   <label className="inline-flex items-center gap-2">
                     <input type="radio" name="mode" checked={mode === "plan"} onChange={() => setMode("plan")} />

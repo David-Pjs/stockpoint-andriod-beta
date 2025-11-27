@@ -21,6 +21,8 @@ import StockPOSPage from "./features/sales/StockPOSPage";
 import TransactionsPage from "./features/sales/TransactionsPage";
 import ReportsPage from "./features/reports/ReportsPage";
 import SettingsPage from "./features/settings/SettingsPage";
+import CreditPage from "./features/credit/CreditPage";
+import ExpensesPage from "./features/expenses/ExpensesPage";
 
 // public Paystack callback
 import BillingCallback from "./features/billing/BillingCallback";
@@ -39,6 +41,8 @@ const router = createBrowserRouter([
       { path: "products", element: <ProductsPage /> },
       { path: "sales", element: <StockPOSPage /> },
       { path: "transactions", element: <TransactionsPage /> },
+      { path: "credit", element: <CreditPage /> },
+      { path: "expenses", element: <ExpensesPage /> },
       { path: "reports", element: <ReportsPage /> },
       { path: "settings", element: <SettingsPage /> },
     ],

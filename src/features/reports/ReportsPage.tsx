@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Card from "../../ui/Card";
 import Pill from "../../ui/Pill";
+import ReportsHelper from "../../components/ReportsHelper";
 import {
   getTransactionsForDay,
   getTransactionsForMonth,
@@ -603,12 +604,15 @@ export default function ReportsPage() {
 
   return (
     <div className="grid gap-6">
+      {/* Helper for Nigerian traders */}
+      <ReportsHelper />
+
       {/* Controls + KPIs */}
       <Card>
         <div className="flex flex-col gap-3 mb-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">Reports</h1>
-            <div className="text-sm text-slate-400">Deep-dive analytics and exports — insights that help decisions.</div>
+            <h1 className="text-2xl font-extrabold tracking-tight">📊 Business Reports</h1>
+            <div className="text-sm text-[var(--muted)]">Track your sales, expenses, and profit. Know how your business is doing.</div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">

@@ -148,6 +148,12 @@ export default function AppShell() {
                 <Link to="/transactions" className={`nav-link ${isActive("/transactions") ? "active" : ""}`}>
                   Quick Sales
                 </Link>
+                <Link to="/credit" className={`nav-link ${isActive("/credit") ? "active" : ""}`}>
+                  Credit
+                </Link>
+                <Link to="/expenses" className={`nav-link ${isActive("/expenses") ? "active" : ""}`}>
+                  Expenses
+                </Link>
                 <Link to="/reports" className={`nav-link ${isActive("/reports") ? "active" : ""}`}>
                   Reports
                 </Link>
@@ -226,6 +232,12 @@ export default function AppShell() {
                 </Link>
                 <Link to="/transactions" className={`nav-link ${isActive("/transactions") ? "active" : ""}`}>
                   Quick Sales
+                </Link>
+                <Link to="/credit" className={`nav-link ${isActive("/credit") ? "active" : ""}`}>
+                  Credit
+                </Link>
+                <Link to="/expenses" className={`nav-link ${isActive("/expenses") ? "active" : ""}`}>
+                  Expenses
                 </Link>
                 <Link to="/reports" className={`nav-link ${isActive("/reports") ? "active" : ""}`}>
                   Reports

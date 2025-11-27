@@ -1,30 +1,38 @@
-// src/features/settings/ThemeToggle.tsx
-import { useEffect, useState } from "react";
-
-function getStoredTheme(): "light" | "dark" {
-  try { return (localStorage.getItem("sp_theme") as any) || "dark"; } catch { return "dark"; }
-}
-function applyTheme(t: "light" | "dark") {
-  document.documentElement.dataset.theme = t;
-  try { localStorage.setItem("sp_theme", t); } catch {}
-  try { localStorage.setItem("__sp_changed__", String(Date.now())); } catch {}
-}
+import { useTheme } from '../../hooks/useTheme';
+import { Moon, Sun, Monitor } from 'lucide-react';
 
 export default function ThemeToggle() {
-  const [t, setT] = useState<"light" | "dark">(getStoredTheme());
-  useEffect(() => { applyTheme(t); }, [t]);
+  const { theme, setTheme, effectiveTheme } = useTheme();
+
+  const options = [
+    { value: 'dark' as const, label: 'Dark', icon: Moon },
+    { value: 'light' as const, label: 'Light', icon: Sun },
+    { value: 'system' as const, label: 'System', icon: Monitor },
+  ];
 
   return (
-    <div className="p-4 rounded-xl border border-[var(--line)] bg-[var(--panel)]">
-      <h3 className="text-lg font-semibold mb-2">Appearance</h3>
-      <div className="flex items-center gap-3">
-        <label className="flex items-center gap-2">
-          <input type="radio" checked={t==="light"} onChange={()=>setT("light")} /> Light
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="radio" checked={t==="dark"} onChange={()=>setT("dark")} /> Dark
-        </label>
-      </div>
+    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[var(--panel-2)] border border-[var(--line)]">
+      {options.map(({ value, label, icon: Icon }) => {
+        const isActive = theme === value;
+        return (
+          <button
+            key={value}
+            onClick={() => setTheme(value)}
+            className={`
+              flex items-center gap-2 px-3 py-2 text-sm rounded-lg font-medium
+              transition-all duration-200
+              ${isActive
+                ? 'bg-[var(--accent)] text-white shadow-sm'
+                : 'text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--ghost)]'
+              }
+            `}
+            title={value === 'system' ? `System (currently ${effectiveTheme})` : label}
+          >
+            <Icon size={16} />
+            <span>{label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }
