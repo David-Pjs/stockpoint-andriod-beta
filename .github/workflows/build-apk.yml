@@ -1,8 +1,6 @@
-name: Build Android APK
+name: Build APK (Alternative)
 
 on:
-  push:
-    branches: [ beta, main ]
   workflow_dispatch:
 
 jobs:
@@ -11,15 +9,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -31,10 +29,7 @@ jobs:
         run: npm run build
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: Accept Android licenses
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        uses: android-actions/setup-android@v3
 
       - name: Sync Capacitor
         run: npx cap sync android
@@ -48,8 +43,8 @@ jobs:
         run: ./gradlew assembleDebug --no-daemon
 
       - name: Upload Debug APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: stockpoint-debug-apk
+          name: stockpoint-apk-manual
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
