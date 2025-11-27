@@ -1,0 +1,49 @@
+FROM node:20
+
+# Install OpenJDK 17
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean
+
+# Install Android SDK
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV ANDROID_HOME=${ANDROID_SDK_ROOT}
+ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools
+
+RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    cd ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip && \
+    unzip commandlinetools-linux-9477386_latest.zip && \
+    rm commandlinetools-linux-9477386_latest.zip && \
+    mv cmdline-tools latest
+
+# Accept licenses and install required packages
+RUN yes | sdkmanager --licenses || true
+RUN sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy project files
+COPY . .
+
+# Build React app
+RUN npm run build
+
+# Sync Capacitor
+RUN npx cap sync android
+
+# Build APK
+WORKDIR /app/android
+RUN chmod +x gradlew && ./gradlew assembleDebug
+
+# Copy APK to output
+RUN mkdir -p /output && \
+    cp app/build/outputs/apk/debug/app-debug.apk /output/
+
+CMD ["echo", "APK built successfully! Find it in /output/app-debug.apk"]
